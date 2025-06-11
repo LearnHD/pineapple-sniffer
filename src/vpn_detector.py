@@ -37,13 +37,15 @@ class PineappleDetector:
             for line in result.stdout.splitlines():
                 for interface in vpn_interfaces:
                     if interface in line.lower():
-                        # Extract interface details with improved regex
-                        match = re.search(r'(\w+(?:\d+)?[@\w]*)\s*:', line)
+                        # Enhanced regex to capture full interface name
+                        match = re.search(r'(\d+:\s*(\w+(?:\d+)?[@\w]*)):', line)
                         state_match = re.search(r'state\s+(\w+)', line)
                         
                         if match:
+                            # Extract the actual interface name from the matched group
+                            interface_name = match.group(2)
                             return {
-                                'interface': match.group(1),
+                                'interface': interface_name,
                                 'state': state_match.group(1) if state_match else 'UNKNOWN'
                             }
             
